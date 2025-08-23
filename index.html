@@ -172,6 +172,9 @@
       const bunga = nominal * (persenBunga / 100);
       const total = nominal + bunga;
 
+      // Hitung biaya per bulan
+      const biayaBulanan = total / tenor;
+
       // Tampilkan hasil
       const resultDiv = document.getElementById("result");
       resultDiv.innerHTML = `
@@ -182,6 +185,7 @@
         <p><b>Bunga Diterapkan:</b> ${persenBunga}%</p>
         <p><b>Jumlah Bunga:</b> Rp ${bunga.toLocaleString("id-ID")}</p>
         <p><b>Total yang harus dibayar:</b> Rp ${total.toLocaleString("id-ID")}</p>
+        <p><b>Biaya setiap bulan:</b> Rp ${biayaBulanan.toLocaleString("id-ID")}</p>
       `;
     });
   </script>
