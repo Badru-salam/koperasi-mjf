@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOPERASI MJF</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f4f6f9;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+    .form-section, .result-section {
+      flex: 1;
+      min-width: 300px;
+      background: white;
+      margin: 10px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .checkbox {
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 15px;
+      background: #27ae60;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #219150;
+    }
+    .result-section h3 {
+      margin-bottom: 10px;
+    }
+    .result-box {
+      background: #ecf0f1;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>KOPERASI MJF - Aplikasi Pinjaman</header>
+
+  <div class="container">
+    <!-- Form Input -->
+    <div class="form-section">
+      <h3>Form Pengajuan Pinjaman</h3>
+      <form id="loanForm">
+        <label>Nama Peminjam:</label>
+        <input type="text" id="nama" required>
+
+        <label>Nominal Pinjaman (Rp):</label>
+        <input type="text" id="nominal" required placeholder="Contoh: 500,000">
+        <div class="checkbox">
+          <input type="checkbox" id="cekNominal"> Nominal di atas 500.000 (setuju, max 5.000.000)
+        </div>
+
+        <label>Tanggal Meminjam:</label>
+        <input type="date" id="tanggal" required>
+
+        <label>Tenor (bulan):</label>
+        <input type="number" id="tenor" min="1" max="12" required>
+
+        <!-- Setting Bunga -->
+        <label>Bunga 1 - 3 bulan (%):</label>
+        <input type="number" id="bunga3" value="5" min="0">
+
+        <label>Bunga 4 - 6 bulan (%):</label>
+        <input type="number" id="bunga6" value="10" min="0">
+
+        <label>Bunga 7 - 12 bulan (%):</label>
+        <input type="number" id="bunga12" value="12" min="0">
+
+        <button type="submit">Ajukan</button>
+      </form>
+    </div>
+
+    <!-- Hasil Data -->
+    <div class="result-section">
+      <h3>Data Pinjaman</h3>
+      <div class="result-box" id="result">
+        Belum ada pengajuan.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const nominalInput = document.getElementById("nominal");
+    const cekNominal = document.getElementById("cekNominal");
+
+    // Format input nominal pakai ribuan
+    nominalInput.addEventListener("input", function(e) {
+      let value = this.value.replace(/\D/g, ""); // hapus non-digit
+      if (value) {
+        this.value = parseInt(value).toLocaleString("id-ID");
+      } else {
+        this.value = "";
+      }
+    });
+
+    document.getElementById("loanForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const nama = document.getElementById("nama").value;
+      const nominalRaw = nominalInput.value.replace(/\./g, "").replace(/,/g, "");
+      const nominal = parseInt(nominalRaw) || 0;
+      const tanggal = document.getElementById("tanggal").value;
+      const tenor = parseInt(document.getElementById("tenor").value);
+
+      const bunga3 = parseFloat(document.getElementById("bunga3").value);
+      const bunga6 = parseFloat(document.getElementById("bunga6").value);
+      const bunga12 = parseFloat(document.getElementById("bunga12").value);
+
+      // Tentukan batas maksimal
+      let maxNominal = cekNominal.checked ? 5000000 : 500000;
+
+      // Validasi nominal
+      if (nominal > maxNominal) {
+        alert(`Nominal pinjaman maksimal Rp ${maxNominal.toLocaleString("id-ID")} sesuai pilihan Anda!`);
+        return;
+      }
+
+      // Validasi tenor
+      if (tenor > 12) {
+        alert("Tenor maksimal 12 bulan (1 tahun).");
+        return;
+      }
+
+      // Tentukan bunga
+      let persenBunga = 0;
+      if (tenor >= 1 && tenor <= 3) {
+        persenBunga = bunga3;
+      } else if (tenor >= 4 && tenor <= 6) {
+        persenBunga = bunga6;
+      } else if (tenor >= 7 && tenor <= 12) {
+        persenBunga = bunga12;
+      }
+
+      // Hitung bunga flat
+      const bunga = nominal * (persenBunga / 100);
+      const total = nominal + bunga;
+
+      // Tampilkan hasil
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = `
+        <p><b>Nama Peminjam:</b> ${nama}</p>
+        <p><b>Nominal Pinjaman:</b> Rp ${nominal.toLocaleString("id-ID")}</p>
+        <p><b>Tanggal Meminjam:</b> ${tanggal}</p>
+        <p><b>Tenor:</b> ${tenor} bulan</p>
+        <p><b>Bunga Diterapkan:</b> ${persenBunga}%</p>
+        <p><b>Jumlah Bunga:</b> Rp ${bunga.toLocaleString("id-ID")}</p>
+        <p><b>Total yang harus dibayar:</b> Rp ${total.toLocaleString("id-ID")}</p>
+      `;
+    });
+  </script>
+</body>
+</html>
