@@ -117,77 +117,75 @@
   </div>
 
   <script>
-    const nominalInput = document.getElementById("nominal");
-    const cekNominal = document.getElementById("cekNominal");
+  const nominalInput = document.getElementById("nominal");
+  const cekNominal = document.getElementById("cekNominal");
 
-    // Format input nominal pakai ribuan
-    nominalInput.addEventListener("input", function(e) {
-      let value = this.value.replace(/\D/g, ""); // hapus non-digit
-      if (value) {
-        this.value = parseInt(value).toLocaleString("id-ID");
-      } else {
-        this.value = "";
-      }
-    });
+  // Format input nominal pakai ribuan
+  nominalInput.addEventListener("input", function(e) {
+    let value = this.value.replace(/\D/g, ""); // hapus non-digit
+    if (value) {
+      this.value = parseInt(value).toLocaleString("id-ID");
+    } else {
+      this.value = "";
+    }
+  });
 
-    document.getElementById("loanForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+  document.getElementById("loanForm").addEventListener("submit", function(e) {
+    e.preventDefault();
 
-      const nama = document.getElementById("nama").value;
-      const nominalRaw = nominalInput.value.replace(/\./g, "").replace(/,/g, "");
-      const nominal = parseInt(nominalRaw) || 0;
-      const tanggal = document.getElementById("tanggal").value;
-      const tenor = parseInt(document.getElementById("tenor").value);
+    const nama = document.getElementById("nama").value;
+    const nominalRaw = nominalInput.value.replace(/\./g, "").replace(/,/g, "");
+    const nominal = parseInt(nominalRaw) || 0;
+    const tanggal = document.getElementById("tanggal").value;
+    const tenor = parseInt(document.getElementById("tenor").value);
 
-      const bunga3 = parseFloat(document.getElementById("bunga3").value);
-      const bunga6 = parseFloat(document.getElementById("bunga6").value);
-      const bunga12 = parseFloat(document.getElementById("bunga12").value);
+    const bunga3 = parseFloat(document.getElementById("bunga3").value);
+    const bunga6 = parseFloat(document.getElementById("bunga6").value);
+    const bunga12 = parseFloat(document.getElementById("bunga12").value);
 
-      // Tentukan batas maksimal
-      let maxNominal = cekNominal.checked ? 5000000 : 500000;
+    // Tentukan batas maksimal
+    let maxNominal = cekNominal.checked ? 5000000 : 500000;
 
-      // Validasi nominal
-      if (nominal > maxNominal) {
-        alert(`Nominal pinjaman maksimal Rp ${maxNominal.toLocaleString("id-ID")} sesuai pilihan Anda!`);
-        return;
-      }
+    // Validasi nominal
+    if (nominal > maxNominal) {
+      alert(`Nominal pinjaman maksimal Rp ${maxNominal.toLocaleString("id-ID")} sesuai pilihan Anda!`);
+      return;
+    }
 
-      // Validasi tenor
-      if (tenor > 12) {
-        alert("Tenor maksimal 12 bulan (1 tahun).");
-        return;
-      }
+    // Validasi tenor
+    if (tenor > 12) {
+      alert("Tenor maksimal 12 bulan (1 tahun).");
+      return;
+    }
 
-      // Tentukan bunga
-      let persenBunga = 0;
-      if (tenor >= 1 && tenor <= 3) {
-        persenBunga = bunga3;
-      } else if (tenor >= 4 && tenor <= 6) {
-        persenBunga = bunga6;
-      } else if (tenor >= 7 && tenor <= 12) {
-        persenBunga = bunga12;
-      }
+    // Tentukan bunga
+    let persenBunga = 0;
+    if (tenor >= 1 && tenor <= 3) {
+      persenBunga = bunga3;
+    } else if (tenor >= 4 && tenor <= 6) {
+      persenBunga = bunga6;
+    } else if (tenor >= 7 && tenor <= 12) {
+      persenBunga = bunga12;
+    }
 
-      // Hitung bunga flat
-      const bunga = nominal * (persenBunga / 100);
-      const total = nominal + bunga;
+    // Hitung bunga flat
+    const bunga = nominal * (persenBunga / 100);
+    const total = nominal + bunga;
 
-      // Hitung biaya per bulan
-      const biayaBulanan = total / tenor;
+    // Hitung biaya per bulan (pokok dibagi tenor + bunga dibagi tenor)
+    const biayaBulanan = (nominal / tenor) + (bunga / tenor);
 
-      // Tampilkan hasil
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = `
-        <p><b>Nama Peminjam:</b> ${nama}</p>
-        <p><b>Nominal Pinjaman:</b> Rp ${nominal.toLocaleString("id-ID")}</p>
-        <p><b>Tanggal Meminjam:</b> ${tanggal}</p>
-        <p><b>Tenor:</b> ${tenor} bulan</p>
-        <p><b>Bunga Diterapkan:</b> ${persenBunga}%</p>
-        <p><b>Jumlah Bunga:</b> Rp ${bunga.toLocaleString("id-ID")}</p>
-        <p><b>Total yang harus dibayar:</b> Rp ${total.toLocaleString("id-ID")}</p>
-        <p><b>Biaya setiap bulan:</b> Rp ${biayaBulanan.toLocaleString("id-ID")}</p>
-      `;
-    });
-  </script>
-</body>
-</html>
+    // Tampilkan hasil
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = `
+      <p><b>Nama Peminjam:</b> ${nama}</p>
+      <p><b>Nominal Pinjaman:</b> Rp ${nominal.toLocaleString("id-ID")}</p>
+      <p><b>Tanggal Meminjam:</b> ${tanggal}</p>
+      <p><b>Tenor:</b> ${tenor} bulan</p>
+      <p><b>Bunga Diterapkan:</b> ${persenBunga}%</p>
+      <p><b>Jumlah Bunga:</b> Rp ${bunga.toLocaleString("id-ID")}</p>
+      <p><b>Total yang harus dibayar:</b> Rp ${total.toLocaleString("id-ID")}</p>
+      <p><b>Biaya setiap bulan:</b> Rp ${biayaBulanan.toLocaleString("id-ID")}</p>
+    `;
+  });
+</script>
