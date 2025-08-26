@@ -4,79 +4,67 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KOPERASI MJF</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-      background: #f4f6f9;
-    }
+    * { font-family: "Poppins", sans-serif; box-sizing: border-box; }
+    body { margin: 0; padding: 0; background: #f4f6fa; color: #2c3e50; }
     header {
-      background: #2c3e50;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      font-size: 20px;
-      font-weight: bold;
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      color: white; text-align: center;
+      padding: 18px; font-size: 22px; font-weight: 600;
+      letter-spacing: 1px; box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 20px;
-    }
+    .container { display: flex; flex-wrap: wrap; padding: 20px; max-width: 1100px; margin: auto; gap: 20px; }
     .form-section, .result-section {
-      flex: 1;
-      min-width: 300px;
-      background: white;
-      margin: 10px;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      flex: 1; min-width: 320px; background: white; padding: 25px;
+      border-radius: 15px; box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
     }
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
+    .form-section:hover, .result-section:hover { transform: translateY(-4px); }
+    h3 { margin-bottom: 15px; color: #34495e; }
+    label { display: block; margin-top: 12px; font-weight: 600; font-size: 14px; }
     input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      width: 100%; padding: 10px; margin-top: 6px;
+      border-radius: 8px; border: 1px solid #ccc; font-size: 14px;
+      transition: all 0.2s ease;
     }
-    .checkbox {
-      margin-top: 10px;
-    }
+    input:focus { border-color: #3498db; outline: none; box-shadow: 0 0 5px rgba(52,152,219,0.4); }
+    .checkbox { margin-top: 12px; font-size: 13px; }
+    .btn-group { display: flex; gap: 12px; margin-top: 18px; }
     button {
-      margin-top: 15px;
-      background: #27ae60;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
+      flex: 1; padding: 12px; border: none; border-radius: 10px;
+      cursor: pointer; font-size: 15px; font-weight: 600; color: white;
+      background: linear-gradient(135deg, #27ae60, #2ecc71); transition: all 0.3s ease;
     }
-    button:hover {
-      background: #219150;
+    button:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    button:nth-child(2) { background: linear-gradient(135deg, #e67e22, #f39c12); }
+    .result-box { background: #f9fbfc; padding: 18px; border-radius: 12px; border: 1px solid #e1e6eb; }
+    /* Modal */
+    .modal {
+      display: none; position: fixed; z-index: 1000;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); justify-content: center; align-items: center;
+      animation: fadeIn 0.3s ease;
     }
-    .result-section h3 {
-      margin-bottom: 10px;
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-content {
+      background: white; padding: 25px; border-radius: 15px;
+      width: 90%; max-width: 420px; text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25); animation: slideUp 0.3s ease;
     }
-    .result-box {
-      background: #ecf0f1;
-      padding: 15px;
-      border-radius: 8px;
-    }
+    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-content input { margin: 12px 0; font-size: 15px; }
+    .close-btn { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+    .close-btn:hover { box-shadow: 0 4px 12px rgba(192,57,43,0.3); }
   </style>
 </head>
 <body>
-  <header>KOPERASI MJF - Aplikasi Pinjaman</header>
+  <header>💳 KOPERASI MJF - Aplikasi Pinjaman</header>
 
   <div class="container">
     <!-- Form Input -->
     <div class="form-section">
-      <h3>Form Pengajuan Pinjaman</h3>
+      <h3>📌 Form Pengajuan Pinjaman</h3>
       <form id="loanForm">
         <label>Nama Peminjam:</label>
         <input type="text" id="nama" required>
@@ -103,16 +91,39 @@
         <label>Bunga 7 - 12 bulan (%):</label>
         <input type="number" id="bunga12" value="12" min="0">
 
-        <button type="submit">Ajukan</button>
+        <!-- Setting Penalti -->
+        <label>Penalti Pelunasan Cepat (%):</label>
+        <input type="number" id="penalti" value="5" min="0">
+
+        <div class="btn-group">
+          <button type="submit">Ajukan</button>
+          <button type="button" onclick="openModal()">Pelunasan Cepat</button>
+        </div>
       </form>
     </div>
 
     <!-- Hasil Data -->
     <div class="result-section">
-      <h3>Data Pinjaman</h3>
+      <h3>📊 Data Pinjaman</h3>
       <div class="result-box" id="result">
         Belum ada pengajuan.
       </div>
+    </div>
+  </div>
+
+  <!-- Modal Pelunasan -->
+  <div class="modal" id="pelunasanModal">
+    <div class="modal-content">
+      <h3>⚡ Pelunasan Cepat</h3>
+      <p>Cicilan sudah dibayar sampai bulan ke berapa?</p>
+      <input type="number" id="paidMonth" placeholder="Contoh: 2">
+
+      <p>Ingin dilunasi di bulan ke berapa?</p>
+      <input type="number" id="earlyMonth" placeholder="Contoh: 3">
+
+      <button onclick="cekPelunasan()">Cek Penalti</button>
+      <div id="penaltiResult" style="margin-top:10px; font-weight:bold; color:#2c3e50;"></div>
+      <button class="close-btn" onclick="closeModal()">Tutup</button>
     </div>
   </div>
 
@@ -121,14 +132,12 @@
   const cekNominal = document.getElementById("cekNominal");
 
   // Format input nominal pakai ribuan
-  nominalInput.addEventListener("input", function(e) {
-    let value = this.value.replace(/\D/g, ""); // hapus non-digit
-    if (value) {
-      this.value = parseInt(value).toLocaleString("id-ID");
-    } else {
-      this.value = "";
-    }
+  nominalInput.addEventListener("input", function() {
+    let value = this.value.replace(/\D/g, "");
+    this.value = value ? parseInt(value).toLocaleString("id-ID") : "";
   });
+
+  let pinjamanData = {};
 
   document.getElementById("loanForm").addEventListener("submit", function(e) {
     e.preventDefault();
@@ -143,39 +152,30 @@
     const bunga6 = parseFloat(document.getElementById("bunga6").value);
     const bunga12 = parseFloat(document.getElementById("bunga12").value);
 
-    // Tentukan batas maksimal
     let maxNominal = cekNominal.checked ? 5000000 : 500000;
 
-    // Validasi nominal
     if (nominal > maxNominal) {
       alert(`Nominal pinjaman maksimal Rp ${maxNominal.toLocaleString("id-ID")} sesuai pilihan Anda!`);
       return;
     }
-
-    // Validasi tenor
     if (tenor > 12) {
       alert("Tenor maksimal 12 bulan (1 tahun).");
       return;
     }
 
-    // Tentukan bunga
     let persenBunga = 0;
-    if (tenor >= 1 && tenor <= 3) {
-      persenBunga = bunga3;
-    } else if (tenor >= 4 && tenor <= 6) {
-      persenBunga = bunga6;
-    } else if (tenor >= 7 && tenor <= 12) {
-      persenBunga = bunga12;
-    }
+    if (tenor >= 1 && tenor <= 3) persenBunga = bunga3;
+    else if (tenor >= 4 && tenor <= 6) persenBunga = bunga6;
+    else if (tenor >= 7 && tenor <= 12) persenBunga = bunga12;
 
-    // Hitung bunga flat
     const bunga = nominal * (persenBunga / 100);
     const total = nominal + bunga;
 
-    // Hitung biaya per bulan (pokok dibagi tenor + bunga dibagi tenor)
-    const biayaBulanan = (nominal / tenor) + (bunga / tenor);
+    // Cicilan bulanan dibulatkan ribuan
+    let biayaBulanan = Math.round(total / tenor / 1000) * 1000;
 
-    // Tampilkan hasil
+    pinjamanData = { nama, nominal, tanggal, tenor, persenBunga, bunga, total, biayaBulanan };
+
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = `
       <p><b>Nama Peminjam:</b> ${nama}</p>
@@ -185,7 +185,60 @@
       <p><b>Bunga Diterapkan:</b> ${persenBunga}%</p>
       <p><b>Jumlah Bunga:</b> Rp ${bunga.toLocaleString("id-ID")}</p>
       <p><b>Total yang harus dibayar:</b> Rp ${total.toLocaleString("id-ID")}</p>
-      <p><b>Biaya setiap bulan:</b> Rp ${biayaBulanan.toLocaleString("id-ID")}</p>
+      <p><b>Biaya setiap bulan (dibulatkan):</b> Rp ${biayaBulanan.toLocaleString("id-ID")}</p>
     `;
   });
-</script>
+
+  // Modal Functions
+  function openModal() { document.getElementById("pelunasanModal").style.display = "flex"; }
+  function closeModal() {
+    document.getElementById("pelunasanModal").style.display = "none";
+    document.getElementById("penaltiResult").innerHTML = "";
+    document.getElementById("earlyMonth").value = "";
+    document.getElementById("paidMonth").value = "";
+  }
+
+  // Hitung pelunasan cepat
+  function cekPelunasan() {
+    if (!pinjamanData.nominal) {
+      alert("Harap ajukan pinjaman terlebih dahulu.");
+      return;
+    }
+
+    const paidMonth = parseInt(document.getElementById("paidMonth").value);
+    const earlyMonth = parseInt(document.getElementById("earlyMonth").value);
+    if (!earlyMonth || earlyMonth >= pinjamanData.tenor) {
+      alert("Isi bulan pelunasan lebih cepat (kurang dari tenor)!");
+      return;
+    }
+    if (!paidMonth || paidMonth >= earlyMonth) {
+      alert("Isi bulan yang sudah dibayar (lebih kecil dari bulan pelunasan)!");
+      return;
+    }
+
+    const persenPenalti = parseFloat(document.getElementById("penalti").value) || 0;
+    const penalti = pinjamanData.nominal * (persenPenalti / 100);
+
+    // Total sudah dibayar
+    const sudahBayar = paidMonth * pinjamanData.biayaBulanan;
+
+    // Sisa cicilan normal
+    const sisaNormal = (pinjamanData.tenor - paidMonth) * pinjamanData.biayaBulanan;
+
+    // Total pelunasan cepat dihitung ulang
+    let totalLunas = (earlyMonth - paidMonth) * pinjamanData.biayaBulanan + penalti;
+
+    // dibulatkan ke ribuan terdekat
+    totalLunas = Math.round(totalLunas / 1000) * 1000;
+
+    document.getElementById("penaltiResult").innerHTML = `
+      <p>Sudah bayar sampai bulan ke-${paidMonth}: Rp ${sudahBayar.toLocaleString("id-ID")}</p>
+      <p>Sisa cicilan normal: Rp ${sisaNormal.toLocaleString("id-ID")}</p>
+      <p>Ingin dilunasi di bulan ke-${earlyMonth}</p>
+      <p>Penalti ${persenPenalti}%: Rp ${penalti.toLocaleString("id-ID")}</p>
+      <p><b>Total Bayar Pelunasan Cepat (dibulatkan):</b><br> Rp ${totalLunas.toLocaleString("id-ID")}</p>
+    `;
+  }
+  </script>
+</body>
+</html>
