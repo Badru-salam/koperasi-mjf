@@ -62,7 +62,7 @@
         <label>Nominal Pinjaman (Rp):</label>
         <input type="text" id="nominal" required placeholder="Contoh: 500,000">
         <div class="checkbox">
-          <input type="checkbox" id="cekNominal"> Nominal di atas 500.000 (setuju, max 5.000.000)
+          <input type="checkbox" id="cekNominal"> Nominal di atas 500.000 ceklis
         </div>
 
         <label>Tanggal Meminjam:</label>
@@ -217,7 +217,7 @@
         <p>Sudah bayar sampai bulan ke-${paidMonth}: Rp ${sudahBayar.toLocaleString("id-ID")}</p>
         <p>Sisa cicilan normal: Rp ${sisaNormal.toLocaleString("id-ID")}</p>
         <p>Penalti ${persenPenalti}%: Rp ${penalti.toLocaleString("id-ID")}</p>
-        <p><b>Jumlah yang harus dibayar (LUNAS):</b> Rp ${totalLunas.toLocaleString("id-ID")}</p>
+        <p><b>Jumlah yang harus dibayar + Penalti ${persenPenalti}% (LUNAS):</b> Rp ${totalLunas.toLocaleString("id-ID")}</p>
       `;
 
       updateResult();
